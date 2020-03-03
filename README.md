@@ -11,7 +11,7 @@ Elasticsearch, Kibanaは自動起動するようにしています。
 
 Vagrantfileと同じディレクトリにelasticsearchというディレクトリを用意しておく必要があります。(dummy.txtファイルが置いてあります)
 これは、ゲストOSのElasticsearchがデータを保持するディレクトリ /var/lib/elasticsearch からこのディレクトリ(/vagrant/elasticsearch)にシンボリックリンクを張っているためです。
-Elasticsearchにデータを突っ込んでいく際に、ゲストOS側のファイルシステムが使われるのを回避するために、ホストOSのこのディレクトリにリダイレクトさせるためにこのようにしています。
+Elasticsearchにデータを突っ込んでいく際に、ゲストOS側のファイルシステムが使われるのを回避するために、このようにホストOS側にリダイレクトするようにしています。
 
 # 使い方
 ファイル一式を同一ディレクトリに配置して、そのディレクトリからvagrant upを実行
