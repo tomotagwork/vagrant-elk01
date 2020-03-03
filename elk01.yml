@@ -1,0 +1,81 @@
+- hosts: elk01
+  connection: local
+  become: yes
+  gather_facts: True
+  
+  tasks:
+
+  ## install packages
+  #
+  - name: download and add key
+    apt_key: 
+      url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+      state: present
+      
+  - name: Save the repository definition
+    shell: echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+
+  - name: Install apt-transport-https
+    apt:
+      name: apt-transport-https
+      state: present
+      update_cache: yes
+
+  - name: Install openjdk
+    apt:
+      name: openjdk-9-jre
+      state: present
+      update_cache: yes
+
+  - name: Install Elasticsearch
+    apt:
+      name: elasticsearch
+      state: present
+      update_cache: yes
+
+  - name: Install Kibana
+    apt:
+      name: kibana
+      state: present
+      update_cache: yes
+
+  - name: Install Logstash
+    apt:
+      name: logstash
+      state: present
+      update_cache: yes
+
+  ## config for Elasticsearch
+  #   
+  - name: update config for Elasticsearch
+    shell: "sudo sh -c \"echo 'http.host: 0.0.0.0' >> /etc/elasticsearch/elasticsearch.yml\""  
+
+  - name : create symbolic link
+    shell: sudo sh -c "rm -rf /var/lib/elasticsearch && sudo ln -sf /vagrant/elasticsearch /var/lib/elasticsearch"
+
+  ## config for Kibana
+  #  
+  - name: update config for Kibana
+    shell: "sudo sh -c \"echo 'server.host: 0.0.0.0' >> /etc/kibana/kibana.yml\""
+
+  ## enalbe services
+  #
+  - name: Enable Elasticsearch
+    systemd:
+      name: elasticsearch.service
+      enabled: yes
+
+  - name: Enable Kibana
+    systemd:
+      name: kibana.service
+      enabled: yes
+
+  ## start services
+  #
+  - name: Start Elasticsearch
+    shell: sudo systemctl start elasticsearch.service
+
+  - name: Start Kibana
+    shell: sudo systemctl start kibana.service
+  
+  
